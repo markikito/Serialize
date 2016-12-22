@@ -20,7 +20,7 @@ public interface SerializeObject<T> {
 	 * @param object for serialize. The toString () method must be implemented. 
 	 * @return 
 	 */
-	public String serialize(Object object);
+	public String serialize(Object object) throws SerializedExeption;
 	
 	
 	/**
@@ -30,7 +30,7 @@ public interface SerializeObject<T> {
 	 * @param objectAsString
 	 * @return
 	 */
-	public Object desSerialize(String objectAsString);
+	public Object desSerialize(String objectAsString) throws SerializedExeption;
 	
 
 }

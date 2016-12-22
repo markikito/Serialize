@@ -2,6 +2,9 @@ package com.markikito.serialize;
 
 import java.util.Base64;
 
+import javax.sql.rowset.serial.SerialException;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SerializeObjectWithJackson<T> implements SerializeObject<T> {
@@ -13,20 +16,23 @@ public class SerializeObjectWithJackson<T> implements SerializeObject<T> {
 		this.clazz = clazz;
 	}
 
-	public String serialize(Object object) {
+	public String serialize(Object object) throws SerializedExeption {
 		ObjectMapper mapper=new ObjectMapper();
 		String  resultado=null;
+
+		mapper=new ObjectMapper();
+		String tmp;
 		try {
-			mapper=new ObjectMapper();
-			String tmp=mapper.writeValueAsString(object);
-			resultado = Base64.getEncoder().encodeToString(tmp.getBytes());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
+			tmp = mapper.writeValueAsString(object);
+		} catch (JsonProcessingException e) {
+			throw new SerializedExeption("An exception occurred while processing json.", e);
+		}
+		resultado = Base64.getEncoder().encodeToString(tmp.getBytes());
+
 		return resultado;		
 	}
 
-	public Object desSerialize(String objectAsString) {
+	public Object desSerialize(String objectAsString) throws SerializedExeption {
 		Object resultado=null;
 		ObjectMapper mapper = null;
 		byte[] valueDecoded=null;
@@ -35,7 +41,7 @@ public class SerializeObjectWithJackson<T> implements SerializeObject<T> {
 			mapper = new ObjectMapper();
 			resultado=mapper.readValue(new String(valueDecoded),clazz.getClass());					
 		}catch (Exception e) {
-			e.printStackTrace();
+			throw new SerializedExeption("An exception occurred while desserialized the string", e);
 		} 
 		return resultado;
 	}

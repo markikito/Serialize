@@ -1,5 +1,7 @@
 package com.markikito.serialize;
 
+import java.math.BigDecimal;
+
 /**
  * This Enum represents the type of java for which is a String transform to the type in the enum.
  * @author Marcos Medina
@@ -16,9 +18,13 @@ public enum TypesOfJava {
 	BOOL("boolean", 6),
 	INT("int", 7),
 	CHAR("char", 8),
-	NOT_FOUND("java.lang.Not_Found", 9);
+	DOUBLEPRIMITIVE("double",9),
+	DOUBLE("java.lang.Double",10),
+	FLOATPRIMITIVE("float",11),
+	FLOAT("java.lang.Float",12),
+	BIGDECIMAL("java.math.BigDecimal",13),
+	NOT_FOUND("java.lang.Not_Found", 14);
 		
-	boolean a;
 	private final String description;
 	private final int id;
 	

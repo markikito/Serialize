@@ -1,11 +1,13 @@
 package com.markikito.Serialize;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.markikito.serialize.Person;
 import com.markikito.serialize.SerializeObject;
 import com.markikito.serialize.SerializeObjectWithJackson;
 import com.markikito.serialize.SerializeSimpleObject;
+import com.markikito.serialize.SerializedExeption;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -25,7 +27,7 @@ public class AppTest extends TestCase
 	SerializeObject<Person> serializerSimple;
 	
 	/**
-     * Create the test case
+     * Create the test case and initialized objects for tests
      *
      * @param testName name of the test case
      */
@@ -41,6 +43,10 @@ public class AppTest extends TestCase
         person.setCountryBorn("England");
         person.setBirthDate(new Date());
         person.setHeight(2L);
+        person.setDecimalBig(new BigDecimal("4000.35"));
+        person.setDecimalDouble(new Double(40.44444));
+        person.setDecimalFloatPrimitive(new Float("30.54"));
+        person.setDecimalFloat(new Float("30.54"));
         
         
         serializer= new  SerializeObjectWithJackson<Person>(new Person());
@@ -59,28 +65,37 @@ public class AppTest extends TestCase
      * This test verify that the objet to serialized is the same when is desserialized.
      * 
      */
-//    public void testSerializingAPersonWithJackson(){
-//    	Person personPrime=null;    	
-//    	String objetSerialized=null;
-//    	
-//    	System.out.println("Object to serialize:" + person.toString());
-//    	objetSerialized=serializer.serialize(person);
-//    	System.out.println("Object serielized as String:" + objetSerialized);
-//    	personPrime=(Person)serializer.desSerialize(objetSerialized);
-//    	System.out.println("Object desserielized:" + personPrime.toString());
-//    	assertEquals(true, person.equals(personPrime));
-//    }
+    public void testSerializingAPersonWithJackson(){
+    	Person personPrime=null;    	
+    	String objetSerialized=null;
+    	
+    	try {    	
+    		System.out.println("Object to serialize:" + person.toString());
+			objetSerialized=serializer.serialize(person);
+			System.out.println("Object serielized as String:" + objetSerialized);
+			personPrime=(Person)serializer.desSerialize(objetSerialized);
+			System.out.println("Object desserielized:" + personPrime.toString());
+		} catch (SerializedExeption e) {
+			e.printStackTrace();
+		}
+    	
+    	assertEquals(true, person.equals(personPrime));
+    }
     
     
     public void testSerializingAPersonWithSimpleImplementation(){
     	Person personPrime=null;    	
     	String objetSerialized=null;
-    	
-    	System.out.println("Object to serialize:" + person.toString());
-    	objetSerialized=serializerSimple.serialize(person);
-    	System.out.println("Object serielized as String:" + objetSerialized);
-    	personPrime=(Person)serializerSimple.desSerialize(objetSerialized);
-    	System.out.println("Object desserielized:" + personPrime.toString());
+
+    	try {  
+	    	System.out.println("Object to serialize:" + person.toString());
+	    	objetSerialized=serializerSimple.serialize(person);
+	    	System.out.println("Object serielized as String:" + objetSerialized);
+	    	personPrime=(Person)serializerSimple.desSerialize(objetSerialized);
+	    	System.out.println("Object desserielized:" + personPrime.toString());
+		} catch (SerializedExeption e) {
+			e.printStackTrace();
+		}    	
     	assertEquals(true, person.equals(personPrime));
     }
     

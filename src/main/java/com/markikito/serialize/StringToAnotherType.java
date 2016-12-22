@@ -3,6 +3,8 @@
  */
 package com.markikito.serialize;
 
+import java.lang.reflect.Constructor;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -49,11 +51,76 @@ public class StringToAnotherType {
 				break;
 			case LONGPRIMITIVE:
 				result=stringToLongPrimitive(valueString);
-				break;				
+				break;
+			case BIGDECIMAL:
+				result=stringToBigDecimal(valueString);
+				break;
+			case DOUBLE:
+				result=stringToDouble(valueString);
+				break;
+			case DOUBLEPRIMITIVE:
+				result=stringToDoublePrimitive(valueString);
+				break;
+			case FLOAT:
+				result=stringToFloat(valueString);
+				break;
+			case FLOATPRIMITIVE:
+				result=stringToFloatPrimitive(valueString);
+				break;								
 			case NOT_FOUND:
 				result=stringToAnything(valueString,type);
-				break;				
+				break;
 		}
+		return result;
+	}
+
+	/**
+	 * Transforms a String into a float
+	 * @param valueString
+	 * @return Returns a float Object.
+	 */			
+	private static Object stringToFloatPrimitive(String valueString) {
+		float result=Float.parseFloat(valueString);
+		return result;
+	}
+
+	/**
+	 * Transforms a String into a Float
+	 * @param valueString
+	 * @return Returns a Float Object.
+	 */			
+	private static Object stringToFloat(String valueString) {
+		Float result=Float.parseFloat(valueString);
+		return result;
+	}
+
+	/**
+	 * Transforms a String into a double
+	 * @param valueString
+	 * @return Returns a double Object.
+	 */			
+	private static Object stringToDoublePrimitive(String valueString) {
+		double result=Double.parseDouble(valueString);
+		return result;
+	}
+
+	/**
+	 * Transforms a String into a Double
+	 * @param valueString
+	 * @return Returns a Double Object.
+	 */			
+	private static Object stringToDouble(String valueString) {
+		Double result=Double.parseDouble(valueString);
+		return result;
+	}
+
+	/**
+	 * Transforms a String into a BigDecimal
+	 * @param valueString
+	 * @return Returns a BigDecimal Object.
+	 */		
+	private static Object stringToBigDecimal(String valueString) {
+		BigDecimal result=new BigDecimal(valueString);
 		return result;
 	}
 
@@ -157,11 +224,21 @@ public class StringToAnotherType {
 	 */
 	private static Object stringToAnything(String valueString, Class<?> type) throws SerializedExeption{
 		Object result=null;
+		Constructor<?> constructor=null;
 		try{
-			result=type.cast(valueString);
+			try {
+				constructor = type.getConstructor(String.class);
+			} catch (NoSuchMethodException e1) {
+				System.out.println("The constructor could not be found: " + type.getName()+"(java.lang.String)");
+			}
+			if (constructor != null){
+				result=constructor.newInstance(valueString);
+			}else{
+				result=type.cast(valueString);	
+			}
 		}catch (Exception e){
-			String message="For type:" + type.getClass().getName() + " does not have a specific transformer."  
-					+ " When trying to cast the string value:\"" +valueString +"\" to " + type.getClass().getName() 
+			String message="For type:" + type.getName() + " does not have a specific transformer."  
+					+ " When trying to cast the string value:\"" +valueString +"\" to " + type.getName() 
 					+ " an exception occurred ";					
 			throw new SerializedExeption(message,e);
 		}			
