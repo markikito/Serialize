@@ -25,7 +25,7 @@ public class SerializeSimpleObject<T> implements SerializeObject<T> {
 	}
 	
 	@Override
-	public String serialize(Object object) {
+	public String serialize(Object object) throws SerializedExeption {
 		Method[] methods = clazz.getClass().getMethods();
 		StringBuilder result=new StringBuilder(20);
 		try {		
@@ -44,14 +44,14 @@ public class SerializeSimpleObject<T> implements SerializeObject<T> {
 		 }
 		 result.deleteCharAt(0);
 		} catch (Exception  e) {
-			e.printStackTrace();
+			throw new SerializedExeption(e);
 		}		 
 		return Base64.getEncoder().encodeToString(result.toString().getBytes());
 	}
 
 	
 	@Override
-	public Object desSerialize(String objectAsString) {
+	public Object desSerialize(String objectAsString) throws SerializedExeption{
 		byte[] valueDecoded=null;
 		Map<String,String> objetMap=null;		 
 		try{
@@ -61,7 +61,7 @@ public class SerializeSimpleObject<T> implements SerializeObject<T> {
 			    setAtribute(entry.getKey(), entry.getValue());
 			}
 		} catch (Exception  e) {
-			e.printStackTrace();
+			throw new SerializedExeption(e);
 		}		 
 		return clazz;
 	}
